@@ -1,0 +1,56 @@
+import { createContext, useContext, useState, useEffect } from 'react'
+
+const AuthContext = createContext(null)
+
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const userData = localStorage.getItem('user')
+    if (token && userData) {
+      setUser(JSON.parse(userData))
+    }
+    setLoading(false)
+  }, [])
+
+  const login = (userData, token, geolocation) => {
+    setUser(userData)
+    localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(userData))
+    if (geolocation) {
+      localStorage.setItem('geolocation', JSON.stringify(geolocation))
+    }
+  }
+
+  const register = (userData, token, geolocation) => {
+    setUser(userData)
+    localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(userData))
+    if (geolocation) {
+      localStorage.setItem('geolocation', JSON.stringify(geolocation))
+    }
+  }
+
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    localStorage.removeItem('geolocation')
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}

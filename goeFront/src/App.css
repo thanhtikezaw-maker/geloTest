@@ -1,0 +1,180 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.auth-form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-form h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.auth-form form > div {
+  margin-bottom: 1rem;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.auth-form button:hover:not(:disabled) {
+  background: #535bf2;
+}
+
+.auth-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-form p {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-form a {
+  color: #646cff;
+  text-decoration: none;
+}
+
+.auth-form a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  background: #fee;
+  color: #c33;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.profile-header button {
+  padding: 0.5rem 1rem;
+  background: #c33;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.profile-header button:hover {
+  background: #a22;
+}
+
+.profile-info {
+  display: grid;
+  gap: 2rem;
+}
+
+.user-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-card h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.user-card p {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+.user-posts {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-posts h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.user-posts ul {
+  list-style: none;
+  padding: 0;
+}
+
+.user-posts li {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.user-posts li:last-child {
+  border-bottom: none;
+}
+
+.user-posts h3 {
+  margin: 0 0 0.5rem 0;
+  color: #646cff;
+}
+
+.user-posts p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.location-note {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.5rem !important;
+  font-style: italic;
+}

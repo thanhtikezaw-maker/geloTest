@@ -1,0 +1,147 @@
+{
+  "title": "Auth API",
+  "version": "1.0.0",
+  "baseUrl": "http://localhost:3000",
+  "authHeaders": {
+    "description": "Required on protected endpoints",
+    "headers": {
+      "Authorization": "Bearer <jwt>",
+      "x-geo-ltd": "number",
+      "x-geo-lgt": "number"
+    }
+  },
+  "endpoints": [
+    {
+      "name": "Register",
+      "method": "POST",
+      "path": "/auth/register",
+      "description": "Create a new user and return a JWT.",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "username": "string",
+          "email": "string",
+          "password": "string",
+          "ltd": "number",
+          "lgt": "number"
+        },
+        "examples": [
+          {
+            "username": "alice",
+            "email": "alice@example.com",
+            "password": "S3cur3Pass!",
+            "ltd": 40.7128,
+            "lgt": -74.006
+          }
+        ]
+      },
+      "responses": {
+        "201": {
+          "description": "Created",
+          "body": {
+            "token": "jwt-string",
+            "user": {
+              "id": "uuid",
+              "username": "string",
+              "email": "string"
+            }
+          }
+        },
+        "400": {
+          "description": "Missing required fields",
+          "body": {
+            "error": "Username, email, and password are required"
+          }
+        },
+        "400_geo": {
+          "description": "Missing geolocation",
+          "body": {
+            "error": "Geolocation (ltd, lgt) is required"
+          }
+        },
+        "409": {
+          "description": "Email or username already in use",
+          "body": {
+            "error": "Email already in use"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "body": {
+            "error": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "method": "POST",
+      "path": "/auth/login",
+      "description": "Authenticate a user and return a JWT.",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "string",
+          "password": "string",
+          "ltd": "number",
+          "lgt": "number"
+        },
+        "examples": [
+          {
+            "email": "alice@example.com",
+            "password": "S3cur3Pass!",
+            "ltd": 40.7128,
+            "lgt": -74.006
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "description": "OK",
+          "body": {
+            "token": "jwt-string",
+            "user": {
+              "id": "uuid",
+              "username": "string",
+              "email": "string"
+            }
+          }
+        },
+        "400": {
+          "description": "Missing required fields",
+          "body": {
+            "error": "Email and password are required"
+          }
+        },
+        "400_geo": {
+          "description": "Missing geolocation",
+          "body": {
+            "error": "Geolocation (ltd, lgt) is required"
+          }
+        },
+        "403": {
+          "description": "Geolocation not allowed",
+          "body": {
+            "error": "Geolocation not allowed for user"
+          }
+        },
+        "401": {
+          "description": "Invalid credentials",
+          "body": {
+            "error": "Invalid credentials"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "body": {
+            "error": "string"
+          }
+        }
+      }
+    }
+  ]
+}
