@@ -10,6 +10,7 @@ const fetchUserPosts = async () => {
 export default function Profile() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const isSuperAdmin = user?.role === 'SUPER_ADMIN'
 
   const { data: posts, isLoading } = useQuery({
     queryKey: ['userPosts'],
@@ -21,6 +22,14 @@ export default function Profile() {
     navigate('/login')
   }
 
+  const handleUpdateGeolocation = () => {
+    navigate('/geolocation')
+  }
+
+  const handleGeofence = () => {
+    navigate('/geofence')
+  }
+
   if (!user) {
     navigate('/login')
     return null
@@ -30,7 +39,13 @@ export default function Profile() {
     <div className="profile-container">
       <div className="profile-header">
         <h1>Profile</h1>
-        <button onClick={handleLogout}>Logout</button>
+        <div>
+          {isSuperAdmin && (
+            <button onClick={handleGeofence}>Manage Geofence</button>
+          )}
+          <button onClick={handleUpdateGeolocation}>Update Location</button>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       </div>
       <div className="profile-info">
         <div className="user-card">
@@ -38,6 +53,7 @@ export default function Profile() {
           <p><strong>Username:</strong> {user.username}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>User ID:</strong> {user.id}</p>
+          <p><strong>Role:</strong> {user.role}</p>
         </div>
         <div className="user-posts">
           <h2>Recent Posts</h2>

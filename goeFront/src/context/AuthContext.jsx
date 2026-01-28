@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const AuthContext = createContext(null)
 
@@ -23,30 +23,61 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
   }, [])
 
-  const login = (userData, token, geolocation) => {
+  const login = useCallback((userData, token) => {
     setUser(userData)
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(userData))
-    if (geolocation) {
-      localStorage.setItem('geolocation', JSON.stringify(geolocation))
-    }
-  }
+  }, [])
 
-  const register = (userData, token, geolocation) => {
+  const register = useCallback((userData, token) => {
     setUser(userData)
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(userData))
-    if (geolocation) {
-      localStorage.setItem('geolocation', JSON.stringify(geolocation))
-    }
-  }
+  }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null)
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     localStorage.removeItem('geolocation')
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!user || !navigator?.permissions?.query) {
+      return undefined
+    }
+
+    if (user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN') {
+      return undefined
+    }
+
+    let permissionStatus
+
+    const monitorGeolocation = async () => {
+      try {
+        permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
+        if (permissionStatus.state === 'denied') {
+          logout()
+          return
+        }
+        permissionStatus.onchange = () => {
+          if (permissionStatus.state === 'denied') {
+            logout()
+          }
+        }
+      } catch (err) {
+        // Ignore permission query errors
+      }
+    }
+
+    monitorGeolocation()
+
+    return () => {
+      if (permissionStatus) {
+        permissionStatus.onchange = null
+      }
+    }
+  }, [logout, user])
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout, loading }}>

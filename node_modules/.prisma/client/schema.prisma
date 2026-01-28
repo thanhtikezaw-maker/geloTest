@@ -8,11 +8,42 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  username     String   @unique
-  email        String   @unique
+  id           String        @id @default(uuid())
+  username     String        @unique
+  email        String        @unique
   passwordHash String
+  role         Role          @default(USER)
   ltd          Float?
   lgt          Float?
+  createdAt    DateTime      @default(now())
+  geoLocations GeoLocation[]
+  AllowedArea  AllowedArea[]
+}
+
+model AllowedArea {
+  id           String   @id @default(uuid())
+  ltd          Float
+  lgt          Float
+  radiusMeters Float
+  updatedAt    DateTime @updatedAt
   createdAt    DateTime @default(now())
+  updatedById  String?
+
+  updatedBy User? @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+}
+
+model GeoLocation {
+  id        String   @id @default(uuid())
+  userId    String
+  ltd       Float
+  lgt       Float
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  USER
 }

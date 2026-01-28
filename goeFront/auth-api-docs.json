@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "baseUrl": "http://localhost:3000",
   "authHeaders": {
-    "description": "Required on protected endpoints",
+    "description": "Required on protected endpoints. Geolocation must be within 100 meters of a stored GeoLocation.",
     "headers": {
       "Authorization": "Bearer <jwt>",
       "x-geo-ltd": "number",
@@ -15,7 +15,7 @@
       "name": "Register",
       "method": "POST",
       "path": "/auth/register",
-      "description": "Create a new user and return a JWT.",
+      "description": "Create a new user and return a JWT. Optional geolocation stores the user's latest position.",
       "request": {
         "headers": {
           "Content-Type": "application/json"
@@ -24,8 +24,8 @@
           "username": "string",
           "email": "string",
           "password": "string",
-          "ltd": "number",
-          "lgt": "number"
+          "ltd": "number (optional)",
+          "lgt": "number (optional)"
         },
         "examples": [
           {
@@ -55,12 +55,6 @@
             "error": "Username, email, and password are required"
           }
         },
-        "400_geo": {
-          "description": "Missing geolocation",
-          "body": {
-            "error": "Geolocation (ltd, lgt) is required"
-          }
-        },
         "409": {
           "description": "Email or username already in use",
           "body": {
@@ -79,7 +73,7 @@
       "name": "Login",
       "method": "POST",
       "path": "/auth/login",
-      "description": "Authenticate a user and return a JWT.",
+      "description": "Authenticate a user and return a JWT. If no GeoLocation exists yet, the first login stores it; otherwise geolocation must be within 100 meters of a stored GeoLocation.",
       "request": {
         "headers": {
           "Content-Type": "application/json"
@@ -124,7 +118,7 @@
           }
         },
         "403": {
-          "description": "Geolocation not allowed",
+          "description": "Geolocation not allowed (outside 100m)",
           "body": {
             "error": "Geolocation not allowed for user"
           }
@@ -133,6 +127,62 @@
           "description": "Invalid credentials",
           "body": {
             "error": "Invalid credentials"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "body": {
+            "error": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "Update Geolocation",
+      "method": "PATCH",
+      "path": "/me/geolocation",
+      "description": "Replace the user's allowed geolocation (protected; requires auth headers).",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "ltd": "number",
+          "lgt": "number"
+        },
+        "examples": [
+          {
+            "ltd": 40.7128,
+            "lgt": -74.006
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "description": "OK",
+          "body": {
+            "geolocation": {
+              "ltd": "number",
+              "lgt": "number"
+            }
+          }
+        },
+        "400": {
+          "description": "Missing geolocation",
+          "body": {
+            "error": "Geolocation (ltd, lgt) is required"
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "body": {
+            "error": "Invalid or expired token"
+          }
+        },
+        "403": {
+          "description": "Geolocation not allowed",
+          "body": {
+            "error": "Geolocation not allowed for user"
           }
         },
         "500": {

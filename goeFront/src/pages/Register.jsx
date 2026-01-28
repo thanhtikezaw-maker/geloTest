@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useMutation } from '@tanstack/react-query'
 import { authApi } from '../utils/api'
-import { getGeolocation } from '../utils/geolocation'
+import { getCurrentGeo } from '../utils/geolocation'
 
 export default function Register() {
   const [username, setUsername] = useState('')
@@ -18,29 +18,30 @@ export default function Register() {
     mutationFn: async () => {
       let geolocation
       try {
-        geolocation = await getGeolocation()
+        geolocation = await getCurrentGeo()
       } catch (err) {
         setGeoError('Location access required for registration. Please enable location services.')
         throw err
       }
-      return authApi.register(username, email, password, geolocation.ltd, geolocation.lgt)
+      return authApi.register(username, email, password, geolocation.lat, geolocation.lng)
     },
     onSuccess: (data, variables, context) => {
-      const geolocation = { ltd: context?.ltd, lgt: context?.lgt }
-      register(data.user, data.token, geolocation)
+      register(data.user, data.token)
       navigate('/profile')
     },
     onError: (err) => {
+      if (err.message?.toLowerCase().includes('location')) {
+        setGeoError(err.message)
+        return
+      }
       setError(err.message || 'Registration failed. Please try again.')
     },
-    context: async () => {
-      try {
-        return await getGeolocation()
-      } catch (err) {
-        return null
-      }
-    },
   })
+
+  const handleRetryLocation = () => {
+    setGeoError('')
+    mutation.mutate()
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -93,6 +94,11 @@ export default function Register() {
         <p className="location-note">
           Location access is required for registration
         </p>
+        {geoError && (
+          <button type="button" onClick={handleRetryLocation} disabled={mutation.isPending}>
+            {mutation.isPending ? 'Retrying...' : 'Retry Location'}
+          </button>
+        )}
       </div>
     </div>
   )

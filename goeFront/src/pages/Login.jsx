@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useMutation } from '@tanstack/react-query'
 import { authApi } from '../utils/api'
-import { getGeolocation } from '../utils/geolocation'
+import { getCurrentGeo } from '../utils/geolocation'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -17,29 +17,31 @@ export default function Login() {
     mutationFn: async () => {
       let geolocation
       try {
-        geolocation = await getGeolocation()
+        geolocation = await getCurrentGeo()
       } catch (err) {
-        setGeoError('Location access required for login. Please enable location services.')
-        throw err
+        setGeoError('Location access failed. Admin users can continue without location.')
       }
-      return authApi.login(email, password, geolocation.ltd, geolocation.lgt)
+      return authApi.login(email, password, geolocation?.lat, geolocation?.lng)
     },
     onSuccess: (data, variables, context) => {
-      const geolocation = { ltd: context?.ltd, lgt: context?.lgt }
-      login(data.user, data.token, geolocation)
+      login(data.user, data.token)
+      setGeoError('')
       navigate('/profile')
     },
     onError: (err) => {
+      const message = err.message || ''
+      if (message.toLowerCase().includes('geo') || message.toLowerCase().includes('location')) {
+        setGeoError(err.message)
+        return
+      }
       setError(err.message || 'Login failed. Please try again.')
     },
-    context: async () => {
-      try {
-        return await getGeolocation()
-      } catch (err) {
-        return null
-      }
-    },
   })
+
+  const handleRetryLocation = () => {
+    setGeoError('')
+    mutation.mutate()
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -81,8 +83,13 @@ export default function Login() {
           Don't have an account? <Link to="/register">Register</Link>
         </p>
         <p className="location-note">
-          Location access is required for login
+          Location access is required for standard users
         </p>
+        {geoError && (
+          <button type="button" onClick={handleRetryLocation} disabled={mutation.isPending}>
+            {mutation.isPending ? 'Retrying...' : 'Retry Location'}
+          </button>
+        )}
       </div>
     </div>
   )

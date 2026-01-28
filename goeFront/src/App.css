@@ -35,6 +35,25 @@
   color: #555;
 }
 
+.auth-form .radio-group {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.auth-form .radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.auth-form .radio-option input {
+  width: auto;
+  margin: 0;
+}
+
 .auth-form input {
   width: 100%;
   padding: 0.5rem;
@@ -81,6 +100,14 @@
 .error {
   background: #fee;
   color: #c33;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.success {
+  background: #e6ffed;
+  color: #1a7f37;
   padding: 0.75rem;
   border-radius: 4px;
   margin-bottom: 1rem;
@@ -177,4 +204,51 @@
   color: #666;
   margin-top: 0.5rem !important;
   font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #121212;
+    color: #f3f3f3;
+  }
+
+  .auth-form,
+  .user-card,
+  .user-posts {
+    background: #1f1f1f;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .auth-form h2,
+  .user-card h2,
+  .user-posts h2 {
+    color: #f3f3f3;
+  }
+
+  .auth-form label,
+  .user-card p,
+  .user-posts p,
+  .location-note {
+    color: #cfcfcf;
+  }
+
+  .auth-form input {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #f3f3f3;
+  }
+
+  .user-posts li {
+    border-bottom-color: #333;
+  }
+
+  .error {
+    background: #3a1f1f;
+    color: #ffb3b3;
+  }
+
+  .success {
+    background: #1f3a28;
+    color: #9be9a8;
+  }
 }

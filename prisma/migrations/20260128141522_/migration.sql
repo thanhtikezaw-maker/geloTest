@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "lgt" DOUBLE PRECISION,
+ADD COLUMN     "ltd" DOUBLE PRECISION;

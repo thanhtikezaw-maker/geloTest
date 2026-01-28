@@ -3,6 +3,8 @@ import './App.css'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
+import UpdateGeolocation from './pages/UpdateGeolocation'
+import Geofence from './pages/Geofence'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -17,6 +19,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/geolocation"
+          element={
+            <ProtectedRoute>
+              <UpdateGeolocation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/geofence"
+          element={
+            <ProtectedRoute>
+              <Geofence />
             </ProtectedRoute>
           }
         />
